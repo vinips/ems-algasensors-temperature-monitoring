@@ -18,8 +18,10 @@ public class RabbitMQListener {
 
     private final TemperatureMonitoringService temperatureMonitoringService;
 
+    //O parametro concurrency(x-y) diz o valor minimo (x) e maximo (y)
+    // de Threads que esse Listener pode ter.
     @SneakyThrows
-    @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
+    @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME, concurrency = "2-3")
     public void handle(@Payload TemperatureLogData temperatureLogData) {
         temperatureMonitoringService.processTemperatureReading(temperatureLogData);
         Thread.sleep(Duration.ofSeconds(5));

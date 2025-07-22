@@ -5,7 +5,7 @@ spring:
   application.name: temperature-monitoring
   datasource:
     username: sa
-    url: jdbc:h2:file:~/algasensors-temperature-monitoring-db;CASE_INSENSITIVE_IDENTIFIERS=TRUE;
+    url: jdbc:h2:file:~/algasensors-temperature-monitoring-db;CASE_INSENSITIVE_IDENTIFIERS=TRUE;AUTO_SERVER=TRUE
     driverClassName: org.h2.Driver
     password: '123'
   h2:
@@ -16,9 +16,18 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
-    show-sql: 'true'
+    show-sql: 'false'
   rabbitmq:
     host: localhost
     port: 5672
     username: rabbitmq
     password: rabbitmq
+    #o prefetch limita a quantidade de mensagens que uma instancia do consumer pega de uma unica vez
+    #o padrao eh 250, no caso ele vai pegar 250 mensagens e executar uma a uma
+    #Configurando o cocurrency no Listener com a quantidade de Threads faz com que mais
+    #Mensagens sejam lidas de acordo com que sejam pegas
+    #Ex: 20 mensagens, prefetch de 10, cocurrency de 3: Ele cria 3 threads ara cada instancia.
+    #Cada thread de cada instancia vai ler 1 das 10 mensagens. Acelerando o processo de leitura.
+    listener:
+      simple:
+        prefetch: 4
