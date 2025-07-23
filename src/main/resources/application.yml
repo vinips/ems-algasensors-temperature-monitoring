@@ -28,6 +28,7 @@ spring:
     #Mensagens sejam lidas de acordo com que sejam pegas
     #Ex: 20 mensagens, prefetch de 10, cocurrency de 3: Ele cria 3 threads ara cada instancia.
     #Cada thread de cada instancia vai ler 1 das 10 mensagens. Acelerando o processo de leitura.
+    #Isso no caso se a Exchange for Fanout.
     listener:
       simple:
         prefetch: 4
