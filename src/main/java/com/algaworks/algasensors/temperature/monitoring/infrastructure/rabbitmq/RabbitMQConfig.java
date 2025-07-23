@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String FANOUT_EXCHANGE_NAME = "temperature-processing.temperature.received.v1.e";
-
-    public static final String QUEUE_NAME = "temperature-monitoring.process-temperature.v1.q";
+    public static final String FANOUT_EXCHANGE_PROCESS_TEMPERATURE = "temperature-processing.temperature.received.v1.e";
+    public static final String QUEUE_PROCESS_TEMPERATURE = "temperature-monitoring.process-temperature.v1.q";
+    public static final String QUEUE_SENSOR_ALERT = "temperature-monitoring.sensor-alert.v1.q";
 
     //Esse Bean é necessario para converter um Objeto complexo (TemperatureLogData por exemplo)
     //Sem esse bean ele nao consegue converter e da erro na hora de enviar para fila.
@@ -28,9 +28,16 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue queue() {
+    public Queue queueProcessTemperature() {
         return QueueBuilder
-                .durable(QUEUE_NAME)
+                .durable(QUEUE_PROCESS_TEMPERATURE)
+                .build();
+    }
+
+    @Bean
+    public Queue queueSensorAlert() {
+        return QueueBuilder
+                .durable(QUEUE_SENSOR_ALERT)
                 .build();
     }
 
@@ -38,13 +45,18 @@ public class RabbitMQConfig {
     //Quem cria esse Bean da Exchange é o producer dela, o temperature-processing.
     public FanoutExchange exchange() {
         return ExchangeBuilder
-                .fanoutExchange(FANOUT_EXCHANGE_NAME)
+                .fanoutExchange(FANOUT_EXCHANGE_PROCESS_TEMPERATURE)
                 .build();
     }
 
     @Bean
-    public Binding binding(){
-        return BindingBuilder.bind(queue()).to(exchange());
+    public Binding bindingProcessTemperature(){
+        return BindingBuilder.bind(queueProcessTemperature()).to(exchange());
+    }
+
+    @Bean
+    public Binding bindingSensorAlert(){
+        return BindingBuilder.bind(queueSensorAlert()).to(exchange());
     }
 
 
