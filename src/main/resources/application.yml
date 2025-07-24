@@ -32,3 +32,13 @@ spring:
     listener:
       simple:
         prefetch: 4
+        #Liga a funcao de retry, tentar reler a msg quando o servidor dar erro
+        #Por padrao ela ja vem ligada, porem sem configuracoes especificas.
+        retry:
+          enabled: true
+          #A cada 10 segundos ele faz uma tentativa de leitura em caso de falha
+          initial-interval: 10s
+          max-interval: 20s
+          multiplier: 2
+          #Numero maximo de tentativas de leituras. Depois a mensagem e descartada
+          max-attempts: 3
